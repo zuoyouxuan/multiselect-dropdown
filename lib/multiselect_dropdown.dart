@@ -865,6 +865,7 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
         title: Text(option.label,
             style: widget.optionTextStyle ??
                 TextStyle(
+                  fontWeight: FontWeight.bold,
                   fontSize: widget.hintFontSize,
                 )),
         textColor: Colors.black,
