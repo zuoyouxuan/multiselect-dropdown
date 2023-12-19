@@ -81,35 +81,103 @@ class _MyHomePageState extends State<MyHomePage> {
                   onOptionSelected: (options) {
                     debugPrint(options.toString());
                   },
+                  alwaysShowOptionIcon: true,
+                  dropdownBuilder: (context) {
+                    return Ink(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Colors.blue, Colors.green],
+                          // Replace with your colors
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 85.0,
+                          minHeight: 30.0,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Text(
+                                'Gradient',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                   options: <ValueItem<User>>[
                     ValueItem(
-                        label: 'Option 1', value: User(name: 'User 1', id: 1)),
+                        leading: const Icon(Icons.access_alarms_rounded),
+                        description: "Create for everyday tasks",
+                        label: 'Option 1',
+                        value: User(name: 'User 1', id: 1)),
                     ValueItem(
-                        label: 'Option 2', value: User(name: 'User 2', id: 2)),
+                        leading: const Icon(Icons.access_alarms_rounded),
+                        description: "Create for everyday tasks",
+                        label: 'Option 2',
+                        value: User(name: 'User 2', id: 2)),
                     ValueItem(
-                        label: 'Option 3', value: User(name: 'User 3', id: 3)),
+                        leading: const Icon(Icons.access_alarms_rounded),
+                        description: "Create for everyday tasks",
+                        label: 'Option 3',
+                        value: User(name: 'User 3', id: 3)),
                     ValueItem(
-                        label: 'Option 4', value: User(name: 'User 4', id: 4)),
+                        leading: const Icon(Icons.access_alarms_rounded),
+                        description: "Create for everyday tasks",
+                        label: 'Option 4',
+                        value: User(name: 'User 4', id: 4)),
                     ValueItem(
-                        label: 'Option 5', value: User(name: 'User 5', id: 5)),
+                        leading: const Icon(Icons.access_alarms_rounded),
+                        description: "Create for everyday tasks",
+                        label: 'Option 5',
+                        value: User(name: 'User 5', id: 5)),
                   ],
-                  maxItems: 4,
-                  selectionType: SelectionType.multi,
+                  dropdownBorderRadius: 5,
+                  maxItems: 1,
+                  selectionType: SelectionType.single,
                   chipConfig: const ChipConfig(
-                      wrapType: WrapType.wrap, backgroundColor: Colors.red),
-                  dropdownHeight: 300,
-                  optionTextStyle: const TextStyle(fontSize: 16),
+                    wrapType: WrapType.wrap,
+                    backgroundColor: Colors.red,
+                  ),
+                  optionTextStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
                   selectedOptionIcon: const Icon(
                     Icons.check_circle,
                     color: Colors.pink,
                   ),
                   selectedOptionTextColor: Colors.blue,
-                  searchEnabled: true,
-                  dropdownMargin: 2,
-                  optionSeparator: const SizedBox(
-                    height: 1,
+                  searchEnabled: false,
+                  dropdownMargin: 4,
+                  dropdownWidth: 200,
+                  optionSeparator: SizedBox(
+                    height: 0.1,
                     child: Divider(
-                      color: Colors.black,
+                      color: Colors.grey.withOpacity(0.1),
                     ),
                   ),
                 ),

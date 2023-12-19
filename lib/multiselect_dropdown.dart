@@ -4,21 +4,21 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:multi_dropdown/models/network_config.dart';
 import 'package:multi_dropdown/widgets/hint_text.dart';
 import 'package:multi_dropdown/widgets/selection_chip.dart';
 import 'package:multi_dropdown/widgets/single_selected_item.dart';
-import 'package:http/http.dart' as http;
 
+import 'enum/app_enums.dart';
 import 'models/chip_config.dart';
 import 'models/value_item.dart';
-import 'enum/app_enums.dart';
 
 export 'enum/app_enums.dart';
 export 'models/chip_config.dart';
-export 'models/value_item.dart';
 export 'models/network_config.dart';
+export 'models/value_item.dart';
 
 typedef OnOptionSelected<T> = void Function(List<ValueItem<T>> selectedOptions);
 
@@ -43,6 +43,7 @@ class MultiSelectDropDown<T> extends StatefulWidget {
   final Color? selectedOptionTextColor;
   final Color? selectedOptionBackgroundColor;
   final Widget Function(BuildContext, ValueItem<T>)? selectedItemBuilder;
+  final Widget Function(BuildContext)? dropdownBuilder;
 
   // chip configuration
   final bool showChipInSingleSelectMode;
@@ -52,6 +53,7 @@ class MultiSelectDropDown<T> extends StatefulWidget {
   final Color? optionsBackgroundColor;
   final TextStyle? optionTextStyle;
   final double dropdownHeight;
+  final double dropdownWidth;
   final Widget? optionSeparator;
   final bool alwaysShowOptionIcon;
 
@@ -230,7 +232,9 @@ class MultiSelectDropDown<T> extends StatefulWidget {
       this.controller,
       this.searchEnabled = false,
       this.dropdownBorderRadius,
-      this.dropdownMargin})
+      this.dropdownMargin,
+      this.dropdownBuilder,
+      this.dropdownWidth = 0})
       : networkConfig = null,
         responseParser = null,
         responseErrorBuilder = null,
@@ -241,49 +245,51 @@ class MultiSelectDropDown<T> extends StatefulWidget {
   /// [responseParser] is the parser that is used to parse the response from the network call.
   /// [responseErrorBuilder] is the builder that is used to build the error widget when the network call fails.
 
-  const MultiSelectDropDown.network(
-      {Key? key,
-      required this.networkConfig,
-      required this.responseParser,
-      this.responseErrorBuilder,
-      required this.onOptionSelected,
-      this.selectedOptionTextColor,
-      this.chipConfig = const ChipConfig(),
-      this.selectionType = SelectionType.multi,
-      this.hint = 'Select',
-      this.hintColor = Colors.grey,
-      this.hintFontSize = 14.0,
-      this.selectedOptions = const [],
-      this.disabledOptions = const [],
-      this.alwaysShowOptionIcon = false,
-      this.optionTextStyle,
-      this.selectedOptionIcon = const Icon(Icons.check),
-      this.selectedOptionBackgroundColor,
-      this.optionsBackgroundColor,
-      this.backgroundColor = Colors.white,
-      this.dropdownHeight = 200,
-      this.showChipInSingleSelectMode = false,
-      this.suffixIcon = const Icon(Icons.arrow_drop_down),
-      this.clearIcon = const Icon(Icons.close_outlined, size: 14),
-      this.selectedItemBuilder,
-      this.optionSeparator,
-      this.inputDecoration,
-      this.hintStyle,
-      this.padding,
-      this.borderColor = Colors.grey,
-      this.focusedBorderColor = Colors.black54,
-      this.borderWidth = 0.4,
-      this.focusedBorderWidth = 0.4,
-      this.borderRadius = 12.0,
-      this.radiusGeometry,
-      this.showClearIcon = true,
-      this.maxItems,
-      this.focusNode,
-      this.controller,
-      this.searchEnabled = false,
-      this.dropdownBorderRadius,
-      this.dropdownMargin})
-      : options = const [],
+  const MultiSelectDropDown.network({
+    Key? key,
+    required this.networkConfig,
+    required this.responseParser,
+    this.responseErrorBuilder,
+    required this.onOptionSelected,
+    this.selectedOptionTextColor,
+    this.chipConfig = const ChipConfig(),
+    this.selectionType = SelectionType.multi,
+    this.hint = 'Select',
+    this.hintColor = Colors.grey,
+    this.hintFontSize = 14.0,
+    this.selectedOptions = const [],
+    this.disabledOptions = const [],
+    this.alwaysShowOptionIcon = false,
+    this.optionTextStyle,
+    this.selectedOptionIcon = const Icon(Icons.check),
+    this.selectedOptionBackgroundColor,
+    this.optionsBackgroundColor,
+    this.backgroundColor = Colors.white,
+    this.dropdownHeight = 200,
+    this.showChipInSingleSelectMode = false,
+    this.suffixIcon = const Icon(Icons.arrow_drop_down),
+    this.clearIcon = const Icon(Icons.close_outlined, size: 14),
+    this.selectedItemBuilder,
+    this.optionSeparator,
+    this.inputDecoration,
+    this.hintStyle,
+    this.padding,
+    this.borderColor = Colors.grey,
+    this.focusedBorderColor = Colors.black54,
+    this.borderWidth = 0.4,
+    this.focusedBorderWidth = 0.4,
+    this.borderRadius = 12.0,
+    this.radiusGeometry,
+    this.showClearIcon = true,
+    this.maxItems,
+    this.focusNode,
+    this.controller,
+    this.searchEnabled = false,
+    this.dropdownBorderRadius,
+    this.dropdownMargin,
+    this.dropdownBuilder,
+    this.dropdownWidth = 0,
+  })  : options = const [],
         super(key: key);
 
   @override
@@ -473,39 +479,42 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
           splashColor: null,
           splashFactory: null,
           onTap: _toggleFocus,
-          child: Container(
-            height: widget.chipConfig.wrapType == WrapType.wrap ? null : 52,
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width,
-              minHeight: 52,
-            ),
-            padding: _getContainerPadding(),
-            decoration: _getContainerDecoration(),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _getContainerContent(),
+          child: (widget.dropdownBuilder != null)
+              ? widget.dropdownBuilder!(context)
+              : Container(
+                  height:
+                      widget.chipConfig.wrapType == WrapType.wrap ? null : 52,
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width,
+                    minHeight: 52,
+                  ),
+                  padding: _getContainerPadding(),
+                  decoration: _getContainerDecoration(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _getContainerContent(),
+                      ),
+                      if (widget.showClearIcon && _anyItemSelected) ...[
+                        const SizedBox(width: 4),
+                        InkWell(
+                          onTap: () => clear(),
+                          child: const Icon(
+                            Icons.close_outlined,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 4)
+                      ],
+                      if (!_selectionMode)
+                        AnimatedRotation(
+                          turns: _selectionMode ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 200),
+                          child: widget.suffixIcon,
+                        ),
+                    ],
+                  ),
                 ),
-                if (widget.showClearIcon && _anyItemSelected) ...[
-                  const SizedBox(width: 4),
-                  InkWell(
-                    onTap: () => clear(),
-                    child: const Icon(
-                      Icons.close_outlined,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 4)
-                ],
-                if (!_selectionMode)
-                  AnimatedRotation(
-                    turns: _selectionMode ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: widget.suffixIcon,
-                  ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -675,11 +684,10 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
       return null;
     }
 
-    final Icon icon = widget.selectedOptionIcon ??
-        Icon(
-          Icons.check,
-          color: widget.optionTextStyle?.color ?? Colors.grey,
-        );
+    final Icon icon = Icon(
+      Icons.circle,
+      color: widget.optionTextStyle?.color ?? Colors.grey,
+    );
 
     return icon;
   }
@@ -724,96 +732,111 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                           : widget.dropdownMargin!)
                   : Offset.zero,
               child: Material(
-                  borderRadius: widget.dropdownBorderRadius != null
-                      ? BorderRadius.circular(widget.dropdownBorderRadius!)
-                      : null,
-                  elevation: 4,
-                  shadowColor: Colors.black,
-                  child: Container(
-                    constraints: widget.searchEnabled
-                        ? BoxConstraints.loose(
-                            Size(size.width, widget.dropdownHeight + 50))
-                        : BoxConstraints.loose(
-                            Size(size.width, widget.dropdownHeight)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.searchEnabled) ...[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              controller: searchController,
-                              onTapOutside: (_) {},
-                              scrollPadding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              focusNode: _searchFocusNode,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade200,
-                                isDense: true,
-                                hintText: 'Search',
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
-                                    width: 0.8,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 0.8,
-                                  ),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    searchController.clear();
-                                    dropdownState(() {
-                                      options = _options;
-                                    });
-                                  },
+                borderRadius: widget.dropdownBorderRadius != null
+                    ? BorderRadius.circular(widget.dropdownBorderRadius!)
+                    : null,
+                elevation: 4,
+                shadowColor: Colors.black,
+                child: Container(
+                  // padding: const EdgeInsets.only(bottom: 10 , top: 10),
+                  // color: widget.optionsBackgroundColor ?? Colors.white,
+                  // constraints: BoxConstraints.expand(
+                  //   width: size.width + 220,
+                  //   height: widget.dropdownHeight + 50,
+                  // ),
+                  decoration: BoxDecoration(
+                    color: widget.optionsBackgroundColor ?? Colors.white,
+                    borderRadius:
+                        BorderRadius.circular(widget.dropdownBorderRadius!),
+                  ),
+                  constraints: widget.searchEnabled
+                      ? BoxConstraints.loose(
+                          Size(size.width, widget.dropdownHeight + 50),)
+                      : BoxConstraints.loose(
+                          Size(size.width + widget.dropdownWidth, widget.dropdownHeight),),
+                  // constraints: BoxConstraints.expand(
+                  //   width: size.width + widget.dropdownWidth,
+                  //   height: widget.dropdownHeight,
+                  //   // Size(size.width + 200, widget.dropdownHeight),
+                  // ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.searchEnabled) ...[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: searchController,
+                            onTapOutside: (_) {},
+                            scrollPadding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom),
+                            focusNode: _searchFocusNode,
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey.shade200,
+                              isDense: true,
+                              hintText: 'Search',
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                  width: 0.8,
                                 ),
                               ),
-                              onChanged: (value) {
-                                dropdownState(() {
-                                  options = _options
-                                      .where((element) => element.label
-                                          .toLowerCase()
-                                          .contains(value.toLowerCase()))
-                                      .toList();
-                                });
-                              },
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 0.8,
+                                ),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  searchController.clear();
+                                  dropdownState(() {
+                                    options = _options;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          const Divider(
-                            height: 1,
-                          ),
-                        ],
-                        Expanded(
-                          child: ListView.separated(
-                            separatorBuilder: (_, __) =>
-                                widget.optionSeparator ??
-                                const SizedBox(height: 0),
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: options.length,
-                            itemBuilder: (context, index) {
-                              final option = options[index];
-                              final isSelected =
-                                  selectedOptions.contains(option);
-                              final primaryColor =
-                                  Theme.of(context).primaryColor;
-
-                              return _buildOption(option, primaryColor,
-                                  isSelected, dropdownState, selectedOptions);
+                            onChanged: (value) {
+                              dropdownState(() {
+                                options = _options
+                                    .where((element) => element.label
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()))
+                                    .toList();
+                              });
                             },
                           ),
                         ),
+                        const Divider(
+                          height: 1,
+                        ),
                       ],
-                    ),
-                  )),
+                      Expanded(
+                        child: ListView.separated(
+                          separatorBuilder: (_, __) =>
+                              widget.optionSeparator ??
+                              const SizedBox(height: 0),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            final option = options[index];
+                            final isSelected = selectedOptions.contains(option);
+                            final primaryColor = Theme.of(context).primaryColor;
+
+                            return _buildOption(option, primaryColor,
+                                isSelected, dropdownState, selectedOptions);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -828,6 +851,16 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
       StateSetter dropdownState,
       List<ValueItem<T>> selectedOptions) {
     return ListTile(
+        leading: (option.leading != null) ? option.leading : null,
+        subtitle: (option.description != null)
+            ? Text(
+                option.description!,
+                style: widget.optionTextStyle ??
+                    TextStyle(
+                      fontSize: widget.hintFontSize,
+                    ),
+              )
+            : null,
         title: Text(option.label,
             style: widget.optionTextStyle ??
                 TextStyle(
@@ -839,7 +872,7 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
         selected: isSelected,
         autofocus: true,
         dense: true,
-        tileColor: widget.optionsBackgroundColor ?? Colors.white,
+        // tileColor: widget.optionsBackgroundColor ?? Colors.white,
         selectedTileColor:
             widget.selectedOptionBackgroundColor ?? Colors.grey.shade200,
         enabled: !_disabledOptions.contains(option),

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 /// [label] is the item that is displayed in the list. [value] is the value that is returned when the item is selected.
 /// If the [value] is not provided, the [label] is used as the value.
 /// An example of a [ValueItem] is:
@@ -14,8 +16,11 @@ class ValueItem<T> {
   /// The value of the value item
   final T? value;
 
+  final String? description;
+  final Widget? leading;
+
   /// Default constructor for [ValueItem]
-  const ValueItem({required this.label, required this.value});
+  const ValueItem({required this.label, required this.value , this.description , this.leading});
 
   /// toString method for [ValueItem]
   @override
@@ -28,6 +33,7 @@ class ValueItem<T> {
     return {
       'label': label,
       'value': value,
+      'description': description
     };
   }
 
