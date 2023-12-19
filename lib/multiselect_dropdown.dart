@@ -746,7 +746,7 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                   // ),
                   decoration: BoxDecoration(
                     color: widget.optionsBackgroundColor ?? Colors.white,
-                    borderRadius:
+                    borderRadius:widget.dropdownBorderRadius == null ? null :
                         BorderRadius.circular(widget.dropdownBorderRadius!),
                   ),
                   constraints: widget.searchEnabled
