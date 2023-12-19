@@ -732,11 +732,12 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                           : widget.dropdownMargin!)
                   : Offset.zero,
               child: Material(
-                // borderRadius: widget.dropdownBorderRadius != null
-                //     ? BorderRadius.circular(widget.dropdownBorderRadius!)
-                //     : null,
-                // elevation: 4,
-                // shadowColor: Colors.black,
+                borderRadius: widget.dropdownBorderRadius != null
+                    ? BorderRadius.circular(widget.dropdownBorderRadius!)
+                    : null,
+                color: Colors.transparent,
+                elevation: 4,
+                shadowColor: Colors.black,
                 child: Container(
                   // padding: const EdgeInsets.only(bottom: 10 , top: 10),
                   // color: widget.optionsBackgroundColor ?? Colors.white,
@@ -746,18 +747,14 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                   // ),
                   decoration: BoxDecoration(
                     color: widget.optionsBackgroundColor ?? Colors.white,
-                    borderRadius: widget.dropdownBorderRadius == null
-                        ? null
-                        : BorderRadius.circular(widget.dropdownBorderRadius!),
+                    borderRadius:widget.dropdownBorderRadius == null ? null :
+                        BorderRadius.circular(widget.dropdownBorderRadius!),
                   ),
                   constraints: widget.searchEnabled
                       ? BoxConstraints.loose(
-                          Size(size.width, widget.dropdownHeight + 50),
-                        )
+                          Size(size.width, widget.dropdownHeight + 50),)
                       : BoxConstraints.loose(
-                          Size(size.width + widget.dropdownWidth,
-                              widget.dropdownHeight),
-                        ),
+                          Size(size.width + widget.dropdownWidth, widget.dropdownHeight),),
                   // constraints: BoxConstraints.expand(
                   //   width: size.width + widget.dropdownWidth,
                   //   height: widget.dropdownHeight,
