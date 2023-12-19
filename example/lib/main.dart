@@ -170,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Icons.check_circle,
                     color: Colors.pink,
                   ),
+                  backgroundColor: Colors.green,
                   selectedOptionTextColor: Colors.blue,
                   searchEnabled: false,
                   dropdownMargin: 4,
