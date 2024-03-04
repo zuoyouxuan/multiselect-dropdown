@@ -483,10 +483,10 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
               ? widget.dropdownBuilder!(context)
               : Container(
                   height:
-                      widget.chipConfig.wrapType == WrapType.wrap ? null : 52,
+                      widget.chipConfig.wrapType == WrapType.wrap ? null : 40,
                   constraints: BoxConstraints(
                     minWidth: MediaQuery.of(context).size.width,
-                    minHeight: 52,
+                    minHeight: 40,
                   ),
                   padding: _getContainerPadding(),
                   decoration: _getContainerDecoration(),
@@ -747,14 +747,18 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                   // ),
                   decoration: BoxDecoration(
                     color: widget.optionsBackgroundColor ?? Colors.white,
-                    borderRadius:widget.dropdownBorderRadius == null ? null :
-                        BorderRadius.circular(widget.dropdownBorderRadius!),
+                    borderRadius: widget.dropdownBorderRadius == null
+                        ? null
+                        : BorderRadius.circular(widget.dropdownBorderRadius!),
                   ),
                   constraints: widget.searchEnabled
                       ? BoxConstraints.loose(
-                          Size(size.width, widget.dropdownHeight + 50),)
+                          Size(size.width, widget.dropdownHeight + 50),
+                        )
                       : BoxConstraints.loose(
-                          Size(size.width + widget.dropdownWidth, widget.dropdownHeight),),
+                          Size(size.width + widget.dropdownWidth,
+                              widget.dropdownHeight),
+                        ),
                   // constraints: BoxConstraints.expand(
                   //   width: size.width + widget.dropdownWidth,
                   //   height: widget.dropdownHeight,
