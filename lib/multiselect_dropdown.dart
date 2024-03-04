@@ -65,6 +65,7 @@ class MultiSelectDropDown<T> extends StatefulWidget {
   final double? borderRadius;
   final BorderRadiusGeometry? radiusGeometry;
   final Color? borderColor;
+  final Color? singleSelectedItemColor;
   final Color? focusedBorderColor;
   final double? borderWidth;
   final double? focusedBorderWidth;
@@ -212,6 +213,7 @@ class MultiSelectDropDown<T> extends StatefulWidget {
       this.optionsBackgroundColor,
       this.backgroundColor = Colors.white,
       this.dropdownHeight = 200,
+      this.singleSelectedItemColor = Colors.grey,
       this.showChipInSingleSelectMode = false,
       this.suffixIcon = const Icon(Icons.arrow_drop_down),
       this.clearIcon = const Icon(Icons.close_outlined, size: 14),
@@ -289,6 +291,7 @@ class MultiSelectDropDown<T> extends StatefulWidget {
     this.dropdownMargin,
     this.dropdownBuilder,
     this.dropdownWidth = 0,
+    this.singleSelectedItemColor = Colors.grey,
   })  : options = const [],
         super(key: key);
 
@@ -532,7 +535,10 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
 
     if (widget.selectionType == SelectionType.single &&
         !widget.showChipInSingleSelectMode) {
-      return SingleSelectedItem(label: _selectedOptions.first.label);
+      return SingleSelectedItem(
+        label: _selectedOptions.first.label,
+        color: widget.singleSelectedItemColor ?? Colors.grey,
+      );
     }
 
     return _buildSelectedItems();

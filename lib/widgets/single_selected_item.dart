@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 /// It is used to build the selected item.
 class SingleSelectedItem extends StatelessWidget {
   final String label;
+  final Color color;
   const SingleSelectedItem({
     Key? key,
     required this.label,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -16,8 +18,8 @@ class SingleSelectedItem extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 13,
-          color: Colors.grey.shade700,
+          fontSize: 14,
+          color: color,
         ),
       ),
     );
